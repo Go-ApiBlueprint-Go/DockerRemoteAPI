@@ -1,0 +1,933 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><title>Docker Remote API v1.2</title><link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"><style>@import url('https://fonts.googleapis.com/css?family=Roboto:400,700|Inconsolata|Raleway:200');.hljs-comment,.hljs-title{color:#8e908c}.hljs-variable,.hljs-attribute,.hljs-tag,.hljs-regexp,.ruby .hljs-constant,.xml .hljs-tag .hljs-title,.xml .hljs-pi,.xml .hljs-doctype,.html .hljs-doctype,.css .hljs-id,.css .hljs-class,.css .hljs-pseudo{color:#c82829}.hljs-number,.hljs-preprocessor,.hljs-pragma,.hljs-built_in,.hljs-literal,.hljs-params,.hljs-constant{color:#f5871f}.ruby .hljs-class .hljs-title,.css .hljs-rules .hljs-attribute{color:#eab700}.hljs-string,.hljs-value,.hljs-inheritance,.hljs-header,.ruby .hljs-symbol,.xml .hljs-cdata{color:#718c00}.css .hljs-hexcolor{color:#3e999f}.hljs-function,.python .hljs-decorator,.python .hljs-title,.ruby .hljs-function .hljs-title,.ruby .hljs-title .hljs-keyword,.perl .hljs-sub,.javascript .hljs-title,.coffeescript .hljs-title{color:#4271ae}.hljs-keyword,.javascript .hljs-function{color:#8959a8}.hljs{display:block;background:white;color:#4d4d4c;padding:.5em}.coffeescript .javascript,.javascript .xml,.tex .hljs-formula,.xml .javascript,.xml .vbscript,.xml .css,.xml .hljs-cdata{opacity:.5}body{color:black;background:white;font-family:'Roboto',Helvetica,sans-serif;font-size:14px;line-height:1.42}header{border-bottom:1px solid #f2f2f2;margin-bottom:12px}h1,h2,h3,h4,h5{color:black;margin:12px 0}h1 .permalink,h2 .permalink,h3 .permalink,h4 .permalink,h5 .permalink{margin-left:6px;opacity:0;transition:opacity .25s ease}h1:hover .permalink,h2:hover .permalink,h3:hover .permalink,h4:hover .permalink,h5:hover .permalink{opacity:1}h1{font-family:'Raleway',Helvetica,sans-serif;font-size:36px;font-weight:500}h2{font-family:'Raleway',Helvetica,sans-serif;font-size:30px;font-weight:500}h3{font-size:100%;text-transform:uppercase}h5{font-size:100%;font-weight:normal}p{margin:0 0 10px}p.choices{line-height:1.6}a{color:#428bca;text-decoration:none}li p{margin:0}dl dt{float:left;width:160px;clear:left;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:700}dl dd{margin-left:180px}blockquote{color:rgba(0,0,0,0.5);font-size:15.5px;padding:10px 20px;margin:12px 0;border-left:5px solid #e8e8e8}blockquote p:last-child{margin-bottom:0}pre{background-color:#f5f5f5;padding:12px;border:1px solid #cfcfcf;border-radius:6px;overflow:auto}pre code{background-color:transparent;padding:0;border:none}code{color:#444;background-color:#f5f5f5;font-family:'Inconsolata',monospace;padding:1px 4px;border:1px solid #cfcfcf;border-radius:3px}ul,ol{padding-left:2em}table{border-collapse:collapse;border-spacing:0;margin-bottom:12px}table tr:nth-child(2n){background-color:#fafafa}table th,table td{padding:6px 12px;border:1px solid #d9d9d9}.note,.warning{padding:.3em 1em;margin:1em 0;border-radius:2px;font-size:90%}.note h1,.warning h1,.note h2,.warning h2,.note h3,.warning h3,.note h4,.warning h4,.note h5,.warning h5,.note h6,.warning h6{font-family:'Raleway',Helvetica,sans-serif;font-size:135%;font-weight:500}.note p,.warning p{margin:.5em 0}.note{color:black;background-color:#f0f6fb;border-left:4px solid #428bca}.note h1,.note h2,.note h3,.note h4,.note h5,.note h6{color:#428bca}.warning{color:black;background-color:#fbf1f0;border-left:4px solid #c9302c}.warning h1,.warning h2,.warning h3,.warning h4,.warning h5,.warning h6{color:#c9302c}nav{position:fixed;top:24px;bottom:0;overflow-y:auto}nav .resource-group{padding:0}nav .resource-group .heading{position:relative}nav .resource-group .heading .chevron{position:absolute;top:12px;right:12px;opacity:.5}nav .resource-group .heading a{display:block;color:black;opacity:.7;border-left:2px solid transparent;margin:0}nav .resource-group .heading a:hover{border-left:2px solid black}nav ul{list-style-type:none;padding-left:0}nav ul a{display:block;font-size:13px;color:rgba(0,0,0,0.7);padding:8px 12px;border-top:1px solid #d9d9d9;border-left:2px solid transparent;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}nav ul a:hover{border-left:2px solid black}nav ul>li{margin:0}nav ul>li:first-child{margin-top:-12px}nav ul>li:last-child{margin-bottom:-12px}nav ul ul a{padding-left:24px}nav ul ul li{margin:0}nav ul ul li:first-child{margin-top:0}nav ul ul li:last-child{margin-bottom:0}nav>div>div>ul>li:first-child>a{border-top:none}.preload *{transition:none !important}.pull-left{float:left}.pull-right{float:right}.badge{display:inline-block;float:right;min-width:10px;min-height:14px;padding:3px 7px;font-size:12px;color:#000;background-color:#f2f2f2;border-radius:10px;margin-top:-2px;margin-bottom:-2px}.badge.get{color:#70bbe1;background-color:#d9edf7}.badge.head{color:#70bbe1;background-color:#d9edf7}.badge.options{color:#70bbe1;background-color:#d9edf7}.badge.put{color:#f0db70;background-color:#fcf8e3}.badge.patch{color:#f0db70;background-color:#fcf8e3}.badge.post{color:#93cd7c;background-color:#dff0d8}.badge.delete{color:#ce8383;background-color:#f2dede}.collapse-button{float:right}.collapse-button .close{display:none;color:#428bca;cursor:pointer}.collapse-button .open{color:#428bca;cursor:pointer}.collapse-button.show .close{display:inline}.collapse-button.show .open{display:none}.collapse-content{max-height:0;overflow:hidden;transition:max-height .3s ease-in-out}nav{width:220px}.container{max-width:940px;margin-left:auto;margin-right:auto}.container .row .content{margin-left:244px;width:696px}.container .row:after{content:'';display:block;clear:both}.container-fluid nav{width:22%}.container-fluid .row .content{margin-left:24%;width:76%}@media (max-width:1200px){nav{width:200px}.container{max-width:840px}.container .row .content{margin-left:224px;width:606px}}@media (max-width:992px){nav{width:170px}.container{max-width:720px}.container .row .content{margin-left:194px;width:526px}}@media (max-width:768px){nav{display:none}.container{width:95%;max-width:none}.container .row .content,.container-fluid .row .content{margin-left:auto;margin-right:auto;width:95%}}.back-to-top{position:fixed;z-index:1;bottom:0;right:24px;padding:4px 8px;color:rgba(0,0,0,0.5);background-color:#f2f2f2;text-decoration:none !important;border-top:1px solid #d9d9d9;border-left:1px solid #d9d9d9;border-right:1px solid #d9d9d9;border-top-left-radius:3px;border-top-right-radius:3px}.resource-group{padding:12px;margin-bottom:12px;background-color:white;border:1px solid #d9d9d9;border-radius:6px}.resource-group h2.group-heading,.resource-group .heading a{padding:12px;margin:-12px -12px 12px -12px;background-color:#f2f2f2;border-bottom:1px solid #d9d9d9;border-top-left-radius:6px;border-top-right-radius:6px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}nav .resource-group .heading a{margin-bottom:0}nav .resource-group .collapse-content{padding:0}.action{margin-bottom:12px;padding:12px 12px 0 12px;overflow:hidden;border:1px solid transparent;border-radius:6px}.action h4.action-heading{padding:12px;margin:-12px -12px 12px -12px;border-bottom:1px solid transparent;border-top-left-radius:6px;border-top-right-radius:6px;white-space:nowrap;text-overflow:ellipsis;overflow:hidden}.action h4.action-heading .name{float:right;font-weight:normal}.action h4.action-heading .method{padding:6px 12px;margin-right:12px;border-radius:3px}.action h4.action-heading .method.get{color:#fff;background-color:#337ab7}.action h4.action-heading .method.head{color:#fff;background-color:#337ab7}.action h4.action-heading .method.options{color:#fff;background-color:#337ab7}.action h4.action-heading .method.put{color:#fff;background-color:#ed9c28}.action h4.action-heading .method.patch{color:#fff;background-color:#ed9c28}.action h4.action-heading .method.post{color:#fff;background-color:#5cb85c}.action h4.action-heading .method.delete{color:#fff;background-color:#d9534f}.action h4.action-heading code{color:#444;background-color:#f5f5f5;border-color:#cfcfcf;font-weight:normal}.action dl.inner{padding-bottom:2px}.action .title{border-bottom:1px solid white;margin:0 -12px -1px -12px;padding:12px}.action.get{border-color:#bce8f1}.action.get h4.action-heading{color:#337ab7;background:#d9edf7;border-bottom-color:#bce8f1}.action.head{border-color:#bce8f1}.action.head h4.action-heading{color:#337ab7;background:#d9edf7;border-bottom-color:#bce8f1}.action.options{border-color:#bce8f1}.action.options h4.action-heading{color:#337ab7;background:#d9edf7;border-bottom-color:#bce8f1}.action.post{border-color:#d6e9c6}.action.post h4.action-heading{color:#5cb85c;background:#dff0d8;border-bottom-color:#d6e9c6}.action.put{border-color:#faebcc}.action.put h4.action-heading{color:#ed9c28;background:#fcf8e3;border-bottom-color:#faebcc}.action.patch{border-color:#faebcc}.action.patch h4.action-heading{color:#ed9c28;background:#fcf8e3;border-bottom-color:#faebcc}.action.delete{border-color:#ebccd1}.action.delete h4.action-heading{color:#d9534f;background:#f2dede;border-bottom-color:#ebccd1}</style></head><body class="preload"><a href="#top" class="text-muted back-to-top"><i class="fa fa-toggle-up"></i>&nbsp;Back to top</a><div class="container"><div class="row"><nav><div class="resource-group"><div class="heading"><div class="chevron"><i class="open fa fa-angle-down"></i></div><a href="#brief-introduction">Brief introduction</a></div><div class="collapse-content"><ul></ul></div></div><div class="resource-group"><div class="heading"><div class="chevron"><i class="open fa fa-angle-down"></i></div><a href="#endpoints">Endpoints</a></div><div class="collapse-content"><ul><li><a href="#endpoints-containers">Containers</a><ul><li><a href="#endpoints-containers-get"><span class="badge get"><i class="fa fa-arrow-down"></i></span>List containers</a></li><li><a href="#endpoints-containers-post"><span class="badge post"><i class="fa fa-plus"></i></span>Create a container</a></li><li><a href="#endpoints-containers-get-1"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Inspect a container</a></li><li><a href="#endpoints-containers-get-2"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Inspect changes on a container's filesystem</a></li><li><a href="#endpoints-containers-get-3"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Export a container</a></li><li><a href="#endpoints-containers-post-1"><span class="badge post"><i class="fa fa-plus"></i></span>Start a container</a></li><li><a href="#endpoints-containers-post-2"><span class="badge post"><i class="fa fa-plus"></i></span>Stop a container</a></li><li><a href="#endpoints-containers-post-3"><span class="badge post"><i class="fa fa-plus"></i></span>Restart a container</a></li><li><a href="#endpoints-containers-post-4"><span class="badge post"><i class="fa fa-plus"></i></span>Kill a container</a></li><li><a href="#endpoints-containers-post-5"><span class="badge post"><i class="fa fa-plus"></i></span>Attach to a container</a></li><li><a href="#endpoints-containers-get-4"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Attach to a container using websocket</a></li><li><a href="#endpoints-containers-post-6"><span class="badge post"><i class="fa fa-plus"></i></span>Wait a container</a></li><li><a href="#endpoints-containers-delete"><span class="badge delete"><i class="fa fa-times"></i></span>Remove a container</a></li></ul></li><li><a href="#endpoints-images">Images</a><ul><li><a href="#endpoints-images-get"><span class="badge get"><i class="fa fa-arrow-down"></i></span>List Images</a></li><li><a href="#endpoints-images-post"><span class="badge post"><i class="fa fa-plus"></i></span>Create an image</a></li><li><a href="#endpoints-images-post-1"><span class="badge post"><i class="fa fa-plus"></i></span>Insert a file in an image</a></li><li><a href="#endpoints-images-get-1"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Inspect an image</a></li><li><a href="#endpoints-images-get-2"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Get the history of an image</a></li><li><a href="#endpoints-images-post-2"><span class="badge post"><i class="fa fa-plus"></i></span>Push an image on the registry</a></li><li><a href="#endpoints-images-post-3"><span class="badge post"><i class="fa fa-plus"></i></span>Tag an image into a repository</a></li><li><a href="#endpoints-images-delete"><span class="badge delete"><i class="fa fa-times"></i></span>Remove an image</a></li><li><a href="#endpoints-images-get-3"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Search images</a></li></ul></li><li><a href="#endpoints-2.3-misc">2.3 Misc</a><ul><li><a href="#endpoints-2.3-misc-post"><span class="badge post"><i class="fa fa-plus"></i></span>Build an image from Dockerfile via stdin</a></li><li><a href="#endpoints-2.3-misc-post-1"><span class="badge post"><i class="fa fa-plus"></i></span>Check auth configuration</a></li><li><a href="#endpoints-2.3-misc-get"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Display system-wide information</a></li><li><a href="#endpoints-2.3-misc-get-1"><span class="badge get"><i class="fa fa-arrow-down"></i></span>Show the docker version information</a></li><li><a href="#endpoints-2.3-misc-post-2"><span class="badge post"><i class="fa fa-plus"></i></span>Create a new image from a container's changes</a></li></ul></li></ul></div></div><div class="resource-group"><div class="heading"><div class="chevron"><i class="open fa fa-angle-down"></i></div><a href="#going-further">Going further</a></div><div class="collapse-content"><ul><li><a href="#header-inside-docker-run">Inside docker run</a></li><li><a href="#header-hijacking">Hijacking</a></li><li><a href="#header-cors-requests">CORS Requests</a></li></ul></div></div></nav><div class="content"><header><h1 id="top">Docker Remote API v1.2</h1></header><section id="brief-introduction" class="resource-group"><h2 class="group-heading">Brief introduction<a href="#brief-introduction" class="permalink">&para;</a></h2><ul>
+<li>
+<p>The Remote API is replacing rcli</p>
+</li>
+<li>
+<p>Default port in the docker daemon is 2375</p>
+</li>
+<li>
+<p>The API tends to be REST, but for some complex commands, like attach
+or pull, the HTTP connection is hijacked to transport stdout stdin
+and stderr</p>
+</li>
+</ul>
+</section><section id="endpoints" class="resource-group"><h2 class="group-heading">Endpoints<a href="#endpoints" class="permalink">&para;</a></h2><div id="endpoints-containers" class="resource"><h3 class="resource-heading">Containers<a href="#endpoints-containers" class="permalink">&para;</a></h3><div id="endpoints-containers-get" class="action get"><h4 class="action-heading"><div class="name">List containers</div><a href="#endpoints-containers-get" class="method get">GET</a><code class="uri">/containers/json{?all,limit,since,before}</code></h4><p>List containers</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>400</strong> - bad parameter</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>all</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, Show all containers. Only running containers are shown by default</p>
+</dd><dt>limit</dt><dd><code>number</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>Show <code>limit</code> last created containers, include non-running ones.</p>
+</dd><dt>since</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>Show only containers created since Id, include non-running ones.</p>
+</dd><dt>before</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>Show only containers created before Id, include non-running ones.</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /containers/json?all=1&amp;before=8dfafdbc3a40 HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>[
+  {
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"8dfafdbc3a40"</span></span>,
+    "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"ubuntu:latest"</span></span>,
+    "<span class="hljs-attribute">Command</span>": <span class="hljs-value"><span class="hljs-string">"echo 1"</span></span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1367854155</span></span>,
+    "<span class="hljs-attribute">Status</span>": <span class="hljs-value"><span class="hljs-string">"Exit 0"</span></span>,
+    "<span class="hljs-attribute">Ports</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">SizeRw</span>": <span class="hljs-value"><span class="hljs-number">12288</span></span>,
+    "<span class="hljs-attribute">SizeRootFs</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"9cd87474be90"</span></span>,
+    "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"ubuntu:latest"</span></span>,
+    "<span class="hljs-attribute">Command</span>": <span class="hljs-value"><span class="hljs-string">"echo 222222"</span></span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1367854155</span></span>,
+    "<span class="hljs-attribute">Status</span>": <span class="hljs-value"><span class="hljs-string">"Exit 0"</span></span>,
+    "<span class="hljs-attribute">Ports</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">SizeRw</span>": <span class="hljs-value"><span class="hljs-number">12288</span></span>,
+    "<span class="hljs-attribute">SizeRootFs</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"3176a2479c92"</span></span>,
+    "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"centos:latest"</span></span>,
+    "<span class="hljs-attribute">Command</span>": <span class="hljs-value"><span class="hljs-string">"echo 3333333333333333"</span></span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1367854154</span></span>,
+    "<span class="hljs-attribute">Status</span>": <span class="hljs-value"><span class="hljs-string">"Exit 0"</span></span>,
+    "<span class="hljs-attribute">Ports</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">SizeRw</span>": <span class="hljs-value"><span class="hljs-number">12288</span></span>,
+    "<span class="hljs-attribute">SizeRootFs</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"4cb07b47f9fb"</span></span>,
+    "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"fedora:latest"</span></span>,
+    "<span class="hljs-attribute">Command</span>": <span class="hljs-value"><span class="hljs-string">"echo 444444444444444444444444444444444"</span></span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1367854152</span></span>,
+    "<span class="hljs-attribute">Status</span>": <span class="hljs-value"><span class="hljs-string">"Exit 0"</span></span>,
+    "<span class="hljs-attribute">Ports</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">SizeRw</span>": <span class="hljs-value"><span class="hljs-number">12288</span></span>,
+    "<span class="hljs-attribute">SizeRootFs</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+  </span>}
+]</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-post" class="action post"><h4 class="action-heading"><div class="name">Create a container</div><a href="#endpoints-containers-post" class="method post">POST</a><code class="uri">/containers/create</code></h4><p>Create a container</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>201</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>406</strong> - impossible to attach (container not running)</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">Hostname</span>": <span class="hljs-value"><span class="hljs-string">"null"</span></span>,
+  "<span class="hljs-attribute">User</span>": <span class="hljs-value"><span class="hljs-string">"null"</span></span>,
+  "<span class="hljs-attribute">Memory</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+  "<span class="hljs-attribute">MemorySwap</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+  "<span class="hljs-attribute">AttachStdin</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+  "<span class="hljs-attribute">AttachStdout</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+  "<span class="hljs-attribute">AttachStderr</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+  "<span class="hljs-attribute">PortSpecs</span>": <span class="hljs-value"><span class="hljs-string">"null"</span></span>,
+  "<span class="hljs-attribute">Tty</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+  "<span class="hljs-attribute">OpenStdin</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+  "<span class="hljs-attribute">StdinOnce</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+  "<span class="hljs-attribute">Env</span>": <span class="hljs-value"><span class="hljs-string">"null"</span></span>,
+  "<span class="hljs-attribute">Cmd</span>": <span class="hljs-value">[]</span>,
+  "<span class="hljs-attribute">Dns</span>": <span class="hljs-value"><span class="hljs-string">"null"</span></span>,
+  "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"ubuntu"</span></span>,
+  "<span class="hljs-attribute">Volumes</span>": <span class="hljs-value">{}</span>,
+  "<span class="hljs-attribute">VolumesFrom</span>": <span class="hljs-value"><span class="hljs-string">"null"</span>
+</span>}</code></pre><div style="height: 1px;"></div><h5>Schema</h5><pre><code>{
+  "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span></span>,
+  "<span class="hljs-attribute">properties</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">Hostname</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">User</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">Memory</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">MemorySwap</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"number"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">AttachStdin</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"boolean"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">AttachStdout</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"boolean"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">AttachStderr</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"boolean"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">PortSpecs</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">Tty</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"boolean"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">OpenStdin</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"boolean"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">StdinOnce</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"boolean"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">Env</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">Cmd</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"array"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">Dns</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">Image</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">Volumes</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"object"</span>
+    </span>}</span>,
+    "<span class="hljs-attribute">VolumesFrom</span>": <span class="hljs-value">{
+      "<span class="hljs-attribute">type</span>": <span class="hljs-value"><span class="hljs-string">"string"</span>
+    </span>}
+  </span>}</span>,
+  "<span class="hljs-attribute">$schema</span>": <span class="hljs-value"><span class="hljs-string">"http://json-schema.org/draft-04/schema#"</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>201</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+    "<span class="hljs-attribute">Id</span>":<span class="hljs-value"><span class="hljs-string">"e90e34656806"</span>
+    <span class="hljs-string">"Warnings"</span>:[]
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-get-1" class="action get"><h4 class="action-heading"><div class="name">Inspect a container</div><a href="#endpoints-containers-get-1" class="method get">GET</a><code class="uri">/containers/json</code></h4><p>Return low-level information on the container <code>id</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /containers/4fa6e0f0c678/json HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"4fa6e0f0c6786287e131c3852c58a2e01cc697a68231826813597e4994f1d6e2"</span></span>,
+  "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-string">"2013-05-07T14:51:42.041847+02:00"</span></span>,
+  "<span class="hljs-attribute">Path</span>": <span class="hljs-value"><span class="hljs-string">"date"</span></span>,
+  "<span class="hljs-attribute">Args</span>": <span class="hljs-value">[]</span>,
+  "<span class="hljs-attribute">Config</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">Hostname</span>": <span class="hljs-value"><span class="hljs-string">"4fa6e0f0c678"</span></span>,
+    "<span class="hljs-attribute">User</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">Memory</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+    "<span class="hljs-attribute">MemorySwap</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+    "<span class="hljs-attribute">AttachStdin</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">AttachStdout</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+    "<span class="hljs-attribute">AttachStderr</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+    "<span class="hljs-attribute">PortSpecs</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">Tty</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">OpenStdin</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">StdinOnce</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">Env</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">Cmd</span>": <span class="hljs-value">[
+      <span class="hljs-string">"date"</span>
+    ]</span>,
+    "<span class="hljs-attribute">Dns</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"ubuntu"</span></span>,
+    "<span class="hljs-attribute">Volumes</span>": <span class="hljs-value">{}</span>,
+    "<span class="hljs-attribute">VolumesFrom</span>": <span class="hljs-value"><span class="hljs-string">""</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">State</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">Running</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">Pid</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+    "<span class="hljs-attribute">ExitCode</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+    "<span class="hljs-attribute">StartedAt</span>": <span class="hljs-value"><span class="hljs-string">"2013-05-07T14:51:42.087658+02:01360"</span></span>,
+    "<span class="hljs-attribute">Ghost</span>": <span class="hljs-value"><span class="hljs-literal">false</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"b750fe79269d2ec9a3c593ef05b4332b1d1a02a62b4accb2c21d589ff2f5f2dc"</span></span>,
+  "<span class="hljs-attribute">NetworkSettings</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">IpAddress</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">IpPrefixLen</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+    "<span class="hljs-attribute">Gateway</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">Bridge</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">PortMapping</span>": <span class="hljs-value"><span class="hljs-literal">null</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">SysInitPath</span>": <span class="hljs-value"><span class="hljs-string">"/home/kitty/go/src/github.com/docker/docker/bin/docker"</span></span>,
+  "<span class="hljs-attribute">ResolvConfPath</span>": <span class="hljs-value"><span class="hljs-string">"/etc/resolv.conf"</span></span>,
+  "<span class="hljs-attribute">Volumes</span>": <span class="hljs-value">{}
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-get-2" class="action get"><h4 class="action-heading"><div class="name">Inspect changes on a container's filesystem</div><a href="#endpoints-containers-get-2" class="method get">GET</a><code class="uri">/containers/changes</code></h4><p>Inspect changes on container <code>id</code>'s filesystem</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /containers/4fa6e0f0c678/changes HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>[
+  {
+    "<span class="hljs-attribute">Path</span>": <span class="hljs-value"><span class="hljs-string">"/dev"</span></span>,
+    "<span class="hljs-attribute">Kind</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Path</span>": <span class="hljs-value"><span class="hljs-string">"/dev/kmsg"</span></span>,
+    "<span class="hljs-attribute">Kind</span>": <span class="hljs-value"><span class="hljs-number">1</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Path</span>": <span class="hljs-value"><span class="hljs-string">"/test"</span></span>,
+    "<span class="hljs-attribute">Kind</span>": <span class="hljs-value"><span class="hljs-number">1</span>
+  </span>}
+]</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-get-3" class="action get"><h4 class="action-heading"><div class="name">Export a container</div><a href="#endpoints-containers-get-3" class="method get">GET</a><code class="uri">/containers/export</code></h4><p>Export the contents of container <code>id</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /containers/<span class="hljs-number">4</span>fa6e0f0c678/<span class="hljs-keyword">export</span> HTTP/<span class="hljs-number">1.1</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{{ TAR STREAM }}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-post-1" class="action post"><h4 class="action-heading"><div class="name">Start a container</div><a href="#endpoints-containers-post-1" class="method post">POST</a><code class="uri">/containers/start</code></h4><p>Start the container <code>id</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /containers/e90e34656806/start HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-post-2" class="action post"><h4 class="action-heading"><div class="name">Stop a container</div><a href="#endpoints-containers-post-2" class="method post">POST</a><code class="uri">/containers/stop</code></h4><p>Stop the container <code>id</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>204</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>t</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>number of seconds to wait before killing the container</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /containers/e90e34656806/stop?t=5 HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>204</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-post-3" class="action post"><h4 class="action-heading"><div class="name">Restart a container</div><a href="#endpoints-containers-post-3" class="method post">POST</a><code class="uri">/containers/restart</code></h4><p>Restart the container <code>id</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>204</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>t</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>number of seconds to wait before killing the container</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /containers/e90e34656806/restart?t=5 HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>204</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-post-4" class="action post"><h4 class="action-heading"><div class="name">Kill a container</div><a href="#endpoints-containers-post-4" class="method post">POST</a><code class="uri">/containers/kill</code></h4><p>Kill the container <code>id</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>204</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /containers/e90e34656806/kill HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>204</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-post-5" class="action post"><h4 class="action-heading"><div class="name">Attach to a container</div><a href="#endpoints-containers-post-5" class="method post">POST</a><code class="uri">/containers/attach{?logs,stream,stdin,stdout,stderr}</code></h4><p>Attach to the container <code>id</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>400</strong> - bad parameter</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>logs</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, return logs. Defaul
+false</p>
+</dd><dt>stream</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, return stream.
+Default false</p>
+</dd><dt>stdin</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, if stream=true, attach
+to stdin. Default false</p>
+</dd><dt>stdout</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, if logs=true, return
+stdout log, if stream=true, attach to stdout. Default false</p>
+</dd><dt>stderr</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, if logs=true, return
+stderr log, if stream=true, attach to stderr. Default false</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /containers/16253994b7c4/attach?logs=1&amp;stream=0&amp;stdout=1 HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{{ STREAM }}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-get-4" class="action get"><h4 class="action-heading"><div class="name">Attach to a container using websocket</div><a href="#endpoints-containers-get-4" class="method get">GET</a><code class="uri">/containers/attach/ws{?logs,stream,stdin,stdout,stderr}</code></h4><p>Attach to the container <code>id</code> via websocket</p>
+<p>Implements websocket protocol handshake according to <a href="http://tools.ietf.org/html/rfc6455">RFC 6455</a></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>400</strong> - bad parameter</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>logs</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, return logs. Default false</p>
+</dd><dt>stream</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, return stream.
+Default false</p>
+</dd><dt>stdin</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, if stream=true, attach
+to stdin. Default false</p>
+</dd><dt>stdout</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, if logs=true, return
+stdout log, if stream=true, attach to stdout. Default false</p>
+</dd><dt>stderr</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, if logs=true, return
+stderr log, if stream=true, attach to stderr. Default false</p>
+</dd></dl></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Body</h5><pre><code>{{ STREAM }}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-post-6" class="action post"><h4 class="action-heading"><div class="name">Wait a container</div><a href="#endpoints-containers-post-6" class="method post">POST</a><code class="uri">/containers/wait</code></h4><p>Block until container <code>id</code> stops, then returns the exit code</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /containers/16253994b7c4/wait HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">StatusCode</span>": <span class="hljs-value"><span class="hljs-number">0</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-containers-delete" class="action delete"><h4 class="action-heading"><div class="name">Remove a container</div><a href="#endpoints-containers-delete" class="method delete">DELETE</a><code class="uri">/containers/{?v}</code></h4><p>Remove the container <code>id</code> from the filesystem</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>204</strong> - no error</p>
+</li>
+<li>
+<p><strong>400</strong> - bad parameter</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>v</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, Remove the volumes
+associated to the container. Default false</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>DELETE /containers/16253994b7c4?v=1 HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>204</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div></div></div><div id="endpoints-images" class="resource"><h3 class="resource-heading">Images<a href="#endpoints-images" class="permalink">&para;</a></h3><div id="endpoints-images-get" class="action get"><h4 class="action-heading"><div class="name">List Images</div><a href="#endpoints-images-get" class="method get">GET</a><code class="uri">/images/{format}{?all}</code></h4><p>List images <code>format</code> could be json or viz (json default)</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>400</strong> - bad parameter</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>format</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>List images <code>format</code> could be json or viz (json default)</p>
+</dd><dt>all</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, Show all containers.
+Only running containers are shown by defaul</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /images/json?all=0 HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>[
+  {
+    "<span class="hljs-attribute">Repository</span>": <span class="hljs-value"><span class="hljs-string">"ubuntu"</span></span>,
+    "<span class="hljs-attribute">Tag</span>": <span class="hljs-value"><span class="hljs-string">"precise"</span></span>,
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"b750fe79269d"</span></span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1364102658</span></span>,
+    "<span class="hljs-attribute">Size</span>": <span class="hljs-value"><span class="hljs-number">24653</span></span>,
+    "<span class="hljs-attribute">VirtualSize</span>": <span class="hljs-value"><span class="hljs-number">180116135</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Repository</span>": <span class="hljs-value"><span class="hljs-string">"ubuntu"</span></span>,
+    "<span class="hljs-attribute">Tag</span>": <span class="hljs-value"><span class="hljs-string">"12.04"</span></span>,
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"b750fe79269d"</span></span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1364102658</span></span>,
+    "<span class="hljs-attribute">Size</span>": <span class="hljs-value"><span class="hljs-number">24653</span></span>,
+    "<span class="hljs-attribute">VirtualSize</span>": <span class="hljs-value"><span class="hljs-number">180116135</span>
+  </span>}
+]</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /images/viz HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">text/plain</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>digraph docker {
+<span class="hljs-string">"d82cbacda43a"</span> -&gt; <span class="hljs-string">"074be284591f"</span>
+<span class="hljs-string">"1496068ca813"</span> -&gt; <span class="hljs-string">"08306dc45919"</span>
+<span class="hljs-string">"08306dc45919"</span> -&gt; <span class="hljs-string">"0e7893146ac2"</span>
+<span class="hljs-string">"b750fe79269d"</span> -&gt; <span class="hljs-string">"1496068ca813"</span>
+base -&gt; <span class="hljs-string">"27cf78414709"</span> [style=invis]
+<span class="hljs-string">"f71189fff3de"</span> -&gt; <span class="hljs-string">"9a33b36209ed"</span>
+<span class="hljs-string">"27cf78414709"</span> -&gt; <span class="hljs-string">"b750fe79269d"</span>
+<span class="hljs-string">"0e7893146ac2"</span> -&gt; <span class="hljs-string">"d6434d954665"</span>
+<span class="hljs-string">"d6434d954665"</span> -&gt; <span class="hljs-string">"d82cbacda43a"</span>
+base -&gt; <span class="hljs-string">"e9aa60c60128"</span> [style=invis]
+<span class="hljs-string">"074be284591f"</span> -&gt; <span class="hljs-string">"f71189fff3de"</span>
+<span class="hljs-string">"b750fe79269d"</span> [label=<span class="hljs-string">"b750fe79269d\nubuntu"</span>,shape=box,fillcolor=<span class="hljs-string">"paleturquoise"</span>,style=<span class="hljs-string">"filled,rounded"</span>];
+<span class="hljs-string">"e9aa60c60128"</span> [label=<span class="hljs-string">"e9aa60c60128\ncentos"</span>,shape=box,fillcolor=<span class="hljs-string">"paleturquoise"</span>,style=<span class="hljs-string">"filled,rounded"</span>];
+<span class="hljs-string">"9a33b36209ed"</span> [label=<span class="hljs-string">"9a33b36209ed\nfedora"</span>,shape=box,fillcolor=<span class="hljs-string">"paleturquoise"</span>,style=<span class="hljs-string">"filled,rounded"</span>];
+base [style=invisible]
+}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-post" class="action post"><h4 class="action-heading"><div class="name">Create an image</div><a href="#endpoints-images-post" class="method post">POST</a><code class="uri">/images/create{?fromImage,fromSrc,repo,tag,registry}</code></h4><p>Create an image, either by pull it from the registry or by importing it</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>fromImage</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>name of the image to pull</p>
+</dd><dt>fromSrc</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>source to import, - means stdin</p>
+</dd><dt>repo</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>repository</p>
+</dd><dt>tag</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>tag</p>
+</dd><dt>registry</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>the registry to pull from</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /images/create?fromImage=ubuntu HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{<span class="hljs-string">"status"</span>:<span class="hljs-string">"Pulling..."</span>}
+{<span class="hljs-string">"status"</span>:<span class="hljs-string">"Pulling"</span>, <span class="hljs-string">"progress"</span>:<span class="hljs-string">"1/? (n/a)"</span>}
+{<span class="hljs-string">"error"</span>:<span class="hljs-string">"Invalid..."</span>}
+...</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-post-1" class="action post"><h4 class="action-heading"><div class="name">Insert a file in an image</div><a href="#endpoints-images-post-1" class="method post">POST</a><code class="uri">/images/insert{?path,url}</code></h4><p>Insert a file from <code>url</code> in the image <code>name</code> at <code>path</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>url</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>The url from where the file is taken</p>
+</dd><dt>path</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>The path where the file is stored</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /images/test/insert?path=<span class="hljs-regexp">/usr&amp;url=myurl HTTP/</span><span class="hljs-number">1.1</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{<span class="hljs-string">"status"</span>:<span class="hljs-string">"Inserting..."</span>}
+{<span class="hljs-string">"status"</span>:<span class="hljs-string">"Inserting"</span>, <span class="hljs-string">"progress"</span>:<span class="hljs-string">"1/? (n/a)"</span>}
+{<span class="hljs-string">"error"</span>:<span class="hljs-string">"Invalid..."</span>}
+...</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-get-1" class="action get"><h4 class="action-heading"><div class="name">Inspect an image</div><a href="#endpoints-images-get-1" class="method get">GET</a><code class="uri">/images/json</code></h4><p>Return low-level information on the image <code>name</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such image</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /images/centos/json HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">id</span>": <span class="hljs-value"><span class="hljs-string">"b750fe79269d2ec9a3c593ef05b4332b1d1a02a62b4accb2c21d589ff2f5f2dc"</span></span>,
+  "<span class="hljs-attribute">parent</span>": <span class="hljs-value"><span class="hljs-string">"27cf784147099545"</span></span>,
+  "<span class="hljs-attribute">created</span>": <span class="hljs-value"><span class="hljs-string">"2013-03-23T22:24:18.818426-07:00"</span></span>,
+  "<span class="hljs-attribute">container</span>": <span class="hljs-value"><span class="hljs-string">"3d67245a8d72ecf13f33dffac9f79dcdf70f75acb84d308770391510e0c23ad0"</span></span>,
+  "<span class="hljs-attribute">container_config</span>": <span class="hljs-value">{
+    "<span class="hljs-attribute">Hostname</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">User</span>": <span class="hljs-value"><span class="hljs-string">""</span></span>,
+    "<span class="hljs-attribute">Memory</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+    "<span class="hljs-attribute">MemorySwap</span>": <span class="hljs-value"><span class="hljs-number">0</span></span>,
+    "<span class="hljs-attribute">AttachStdin</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">AttachStdout</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">AttachStderr</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">PortSpecs</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">Tty</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+    "<span class="hljs-attribute">OpenStdin</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+    "<span class="hljs-attribute">StdinOnce</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+    "<span class="hljs-attribute">Env</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">Cmd</span>": <span class="hljs-value">[
+      <span class="hljs-string">"/bin/bash"</span>
+    ]</span>,
+    "<span class="hljs-attribute">Dns</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">Image</span>": <span class="hljs-value"><span class="hljs-string">"centos"</span></span>,
+    "<span class="hljs-attribute">Volumes</span>": <span class="hljs-value"><span class="hljs-literal">null</span></span>,
+    "<span class="hljs-attribute">VolumesFrom</span>": <span class="hljs-value"><span class="hljs-string">""</span>
+  </span>}</span>,
+  "<span class="hljs-attribute">Size</span>": <span class="hljs-value"><span class="hljs-number">6824592</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-get-2" class="action get"><h4 class="action-heading"><div class="name">Get the history of an image</div><a href="#endpoints-images-get-2" class="method get">GET</a><code class="uri">/images/history</code></h4><p>Return the history of the image <code>name</code></p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such image</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /images/fedora/history HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>[
+  {
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"b750fe79269d"</span></span>,
+    "<span class="hljs-attribute">Tag</span>": <span class="hljs-value">[
+      <span class="hljs-string">"ubuntu:latest"</span>
+    ]</span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1364102658</span></span>,
+    "<span class="hljs-attribute">CreatedBy</span>": <span class="hljs-value"><span class="hljs-string">"/bin/bash"</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"27cf78414709"</span></span>,
+    "<span class="hljs-attribute">Created</span>": <span class="hljs-value"><span class="hljs-number">1364068391</span></span>,
+    "<span class="hljs-attribute">CreatedBy</span>": <span class="hljs-value"><span class="hljs-string">""</span>
+  </span>}
+]</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-post-2" class="action post"><h4 class="action-heading"><div class="name">Push an image on the registry</div><a href="#endpoints-images-post-2" class="method post">POST</a><code class="uri">/images/push</code></h4><p>Push the image <code>name</code> on the registry</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such image</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{{ authConfig }}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{<span class="hljs-string">"status"</span>:<span class="hljs-string">"Pushing..."</span>}
+{<span class="hljs-string">"status"</span>:<span class="hljs-string">"Pushing"</span>, <span class="hljs-string">"progress"</span>:<span class="hljs-string">"1/? (n/a)"</span>}
+{<span class="hljs-string">"error"</span>:<span class="hljs-string">"Invalid..."</span>}
+...</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-post-3" class="action post"><h4 class="action-heading"><div class="name">Tag an image into a repository</div><a href="#endpoints-images-post-3" class="method post">POST</a><code class="uri">/images/tag{?repo,force,tag}</code></h4><p>Tag the image <code>name</code> into a repository</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>201</strong> - no error</p>
+</li>
+<li>
+<p><strong>400</strong> - bad parameter</p>
+</li>
+<li>
+<p><strong>404</strong> - no such image</p>
+</li>
+<li>
+<p><strong>409</strong> - conflict</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>repo</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>The repository to tag in</p>
+</dd><dt>force</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>1/True/true or 0/False/false, default false</p>
+</dd><dt>tag</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>The new tag name</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>POST /images/test/tag?repo=myrepo&amp;force=0&amp;tag=v42 HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>201</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-delete" class="action delete"><h4 class="action-heading"><div class="name">Remove an image</div><a href="#endpoints-images-delete" class="method delete">DELETE</a><code class="uri">/images</code></h4><p>Remove the image <code>name</code> from the filesystem</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>204</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such image</p>
+</li>
+<li>
+<p><strong>409</strong> - conflict</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>DELETE /images/test HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>[
+  {
+    "<span class="hljs-attribute">Untagged</span>": <span class="hljs-value"><span class="hljs-string">"3e2f21a89f"</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Deleted</span>": <span class="hljs-value"><span class="hljs-string">"3e2f21a89f"</span>
+  </span>},
+  {
+    "<span class="hljs-attribute">Deleted</span>": <span class="hljs-value"><span class="hljs-string">"53b4f83ac9"</span>
+  </span>}
+]</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-images-get-3" class="action get"><h4 class="action-heading"><div class="name">Search images</div><a href="#endpoints-images-get-3" class="method get">GET</a><code class="uri">/images/search</code></h4><p>Search for an image on <a href="https://hub.docker.com">Docker Hub</a></p>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /images/search?term=sshd HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>[
+     {
+             <span class="hljs-string">"Name"</span>:<span class="hljs-string">"cespare/sshd"</span>,
+             <span class="hljs-string">"Description"</span>:<span class="hljs-string">""</span>
+     },
+     {
+             <span class="hljs-string">"Name"</span>:<span class="hljs-string">"johnfuller/sshd"</span>,
+             <span class="hljs-string">"Description"</span>:<span class="hljs-string">""</span>
+     },
+     {
+             <span class="hljs-string">"Name"</span>:<span class="hljs-string">"dhrp/mongodb-sshd"</span>,
+             <span class="hljs-string">"Description"</span>:<span class="hljs-string">""</span>
+     }
+]
+
+:query term: term to search
+:statuscode <span class="hljs-number">200</span>: no error
+:statuscode <span class="hljs-number">500</span>: server error</code></pre><div style="height: 1px;"></div></div></div></div></div><div id="endpoints-2.3-misc" class="resource"><h3 class="resource-heading">2.3 Misc<a href="#endpoints-2.3-misc" class="permalink">&para;</a></h3><div id="endpoints-2.3-misc-post" class="action post"><h4 class="action-heading"><div class="name">Build an image from Dockerfile via stdin</div><a href="#endpoints-2.3-misc-post" class="method post">POST</a><code class="uri">/build{?t,remote}</code></h4><p>Build an image from Dockerfile</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<p>{{ STREAM }} is the raw text output of the build command. It uses the
+HTTP Hijack method in order to stream.</p>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>t</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>repository name to be applied to the resulting image in
+case of success</p>
+</dd><dt>remote</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>resource to fetch, as URI</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{{ TAR STREAM }}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">text/plain</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{{ STREAM }}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-2.3-misc-post-1" class="action post"><h4 class="action-heading"><div class="name">Check auth configuration</div><a href="#endpoints-2.3-misc-post-1" class="method post">POST</a><code class="uri">/auth</code></h4><p>Get the default username and email</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>204</strong> - no error</p>
+</li>
+<li>
+<p><strong>401</strong> - unauthorized</p>
+</li>
+<li>
+<p><strong>403</strong> - forbidden</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+     "username":"hannibal",
+     "password:"xxxx",
+     "email":"hannibal@a-team.com"
+}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">Status</span>": <span class="hljs-value"><span class="hljs-string">"Login Succeeded"</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-2.3-misc-get" class="action get"><h4 class="action-heading"><div class="name">Display system-wide information</div><a href="#endpoints-2.3-misc-get" class="method get">GET</a><code class="uri">/info</code></h4><p>Display system-wide information</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>GET /info HTTP/1.1</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">Containers</span>": <span class="hljs-value"><span class="hljs-number">11</span></span>,
+  "<span class="hljs-attribute">Images</span>": <span class="hljs-value"><span class="hljs-number">16</span></span>,
+  "<span class="hljs-attribute">Debug</span>": <span class="hljs-value"><span class="hljs-literal">false</span></span>,
+  "<span class="hljs-attribute">NFd</span>": <span class="hljs-value"><span class="hljs-number">11</span></span>,
+  "<span class="hljs-attribute">NGoroutines</span>": <span class="hljs-value"><span class="hljs-number">21</span></span>,
+  "<span class="hljs-attribute">MemoryLimit</span>": <span class="hljs-value"><span class="hljs-literal">true</span></span>,
+  "<span class="hljs-attribute">SwapLimit</span>": <span class="hljs-value"><span class="hljs-literal">false</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-2.3-misc-get-1" class="action get"><h4 class="action-heading"><div class="name">Show the docker version information</div><a href="#endpoints-2.3-misc-get-1" class="method get">GET</a><code class="uri">/version</code></h4><p>Show the docker version information</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>200</strong> - no error</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>200</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">Version</span>": <span class="hljs-value"><span class="hljs-string">"0.2.2"</span></span>,
+  "<span class="hljs-attribute">GitCommit</span>": <span class="hljs-value"><span class="hljs-string">"5a2a5cc+CHANGES"</span></span>,
+  "<span class="hljs-attribute">GoVersion</span>": <span class="hljs-value"><span class="hljs-string">"go1.0.3"</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div><div id="endpoints-2.3-misc-post-2" class="action post"><h4 class="action-heading"><div class="name">Create a new image from a container's changes</div><a href="#endpoints-2.3-misc-post-2" class="method post">POST</a><code class="uri">/commit{?container,repo,tag,m,author}</code></h4><p>Create a new image from a container’s changes</p>
+<p>Status Codes:</p>
+<ul>
+<li>
+<p><strong>201</strong> - no error</p>
+</li>
+<li>
+<p><strong>404</strong> - no such container</p>
+</li>
+<li>
+<p><strong>500</strong> - server error</p>
+</li>
+</ul>
+<div class="title"><strong>Parameters</strong><div class="collapse-button show"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><dl class="inner"><dt>container</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>source container</p>
+</dd><dt>repo</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>repository</p>
+</dd><dt>tag</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>tag</p>
+</dd><dt>m</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>commit message</p>
+</dd><dt>author</dt><dd><code>string</code>&nbsp;<span class="required">(required)</span>&nbsp;<p>author (e.g., “John Hannibal Smith
+&lt;<a href="mailto:hannibal%40a-team.com">hannibal@a-team.com</a>&gt;”)</p>
+</dd></dl></div><div class="title"><strong>Request</strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/json</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">Cmd</span>": <span class="hljs-value">[
+    <span class="hljs-string">"cat"</span>,
+    <span class="hljs-string">"/world"</span>
+  ]</span>,
+  "<span class="hljs-attribute">PortSpecs</span>": <span class="hljs-value">[
+    <span class="hljs-string">"22"</span>
+  ]
+</span>}</code></pre><div style="height: 1px;"></div></div></div><div class="title"><strong>Response&nbsp;&nbsp;<code>201</code></strong><div class="collapse-button"><span class="close">Hide</span><span class="open">Show</span></div></div><div class="collapse-content"><div class="inner"><h5>Headers</h5><pre><code><span class="hljs-attribute">Content-Type</span>: <span class="hljs-string">application/vnd.docker.raw-stream</span></code></pre><div style="height: 1px;"></div><h5>Body</h5><pre><code>{
+  "<span class="hljs-attribute">Id</span>": <span class="hljs-value"><span class="hljs-string">"596069db4bf5"</span>
+</span>}</code></pre><div style="height: 1px;"></div></div></div></div></div></section><section id="going-further" class="resource-group"><h2 class="group-heading">Going further<a href="#going-further" class="permalink">&para;</a></h2><h2 id="header-inside-docker-run">Inside <code>docker run</code> <a class="permalink" href="#header-inside-docker-run" aria-hidden="true">¶</a></h2>
+<p>Here are the steps of <code>docker run</code> :</p>
+<ul>
+<li>
+<p>Create the container</p>
+</li>
+<li>
+<p>If the status code is 404, it means the image doesn’t exist:
+- Try to pull it
+- Then retry to create the container</p>
+</li>
+<li>
+<p>Start the container</p>
+</li>
+<li>
+<p>If you are not in detached mode:
+- Attach to the container, using logs=1 (to have stdout and
+stderr from the container’s start) and stream=1</p>
+</li>
+<li>
+<p>If in detached mode or only stdin is attached:
+- Display the container’s</p>
+</li>
+</ul>
+<h2 id="header-hijacking">Hijacking <a class="permalink" href="#header-hijacking" aria-hidden="true">¶</a></h2>
+<p>In this version of the API, /attach, uses hijacking to transport stdin,
+stdout and stderr on the same socket. This might change in the future.</p>
+<h2 id="header-cors-requests">CORS Requests <a class="permalink" href="#header-cors-requests" aria-hidden="true">¶</a></h2>
+<p>To enable cross origin requests to the remote api add the flag
+“–api-enable-cors” when running docker in daemon mode.</p>
+<blockquote>
+<p>docker -d -H=&quot;<a href="tcp://192.168.1.9:2375">tcp://192.168.1.9:2375</a>&quot;
+-api-enable-cors</p>
+</blockquote>
+</section></div></div></div><p style="text-align: center;" class="text-muted">Generated by&nbsp;<a href="https://github.com/danielgtaylor/aglio" class="aglio">aglio</a>&nbsp;on 19 Sep 2015</p><script>/* eslint-env browser */
+/* eslint quotes: [2, "single"] */
+'use strict';
+
+/*
+  Determine if a string ends with another string.
+*/
+function endsWith(str, suffix) {
+    return str.indexOf(suffix, str.length - suffix.length) !== -1;
+}
+
+/*
+  Get an array [width, height] of the window.
+*/
+function getWindowDimensions() {
+  var w = window,
+      d = document,
+      e = d.documentElement,
+      g = d.body,
+      x = w.innerWidth || e.clientWidth || g.clientWidth,
+      y = w.innerHeight || e.clientHeight || g.clientHeight;
+
+  return [x, y];
+}
+
+/*
+  Collapse or show a request/response example.
+*/
+function toggleCollapseButton(event) {
+    var button = event.target.parentNode;
+    var content = button.parentNode.nextSibling;
+    var inner = content.children[0];
+
+    if (button.className.indexOf('collapse-button') === -1) {
+      // Clicked without hitting the right element?
+      return;
+    }
+
+    if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+        // Currently showing, so let's hide it
+        button.className = 'collapse-button';
+        content.style.maxHeight = '0px';
+    } else {
+        // Currently hidden, so let's show it
+        button.className = 'collapse-button show';
+        content.style.maxHeight = inner.offsetHeight + 12 + 'px';
+    }
+}
+
+/*
+  Collapse or show a navigation menu. It will not be hidden unless it
+  is currently selected or `force` has been passed.
+*/
+function toggleCollapseNav(event, force) {
+    var heading = event.target.parentNode;
+    var content = heading.nextSibling;
+    var inner = content.children[0];
+
+    if (heading.className.indexOf('heading') === -1) {
+      // Clicked without hitting the right element?
+      return;
+    }
+
+    if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+      // Currently showing, so let's hide it, but only if this nav item
+      // is already selected. This prevents newly selected items from
+      // collapsing in an annoying fashion.
+      if (force || window.location.hash && endsWith(event.target.href, window.location.hash)) {
+        content.style.maxHeight = '0px';
+      }
+    } else {
+      // Currently hidden, so let's show it
+      content.style.maxHeight = inner.offsetHeight + 12 + 'px';
+    }
+}
+
+/*
+  Refresh the page after a live update from the server. This only
+  works in live preview mode (using the `--server` parameter).
+*/
+function refresh(body) {
+    document.querySelector('body').className = 'preload';
+    document.body.innerHTML = body;
+
+    // Re-initialize the page
+    init();
+    autoCollapse();
+
+    document.querySelector('body').className = '';
+}
+
+/*
+  Determine which navigation items should be auto-collapsed to show as many
+  as possible on the screen, based on the current window height. This also
+  collapses them.
+*/
+function autoCollapse() {
+  var windowHeight = getWindowDimensions()[1];
+  var itemsHeight = 64; /* Account for some padding */
+  var itemsArray = Array.prototype.slice.call(
+    document.querySelectorAll('nav .resource-group .heading'));
+
+  // Get the total height of the navigation items
+  itemsArray.forEach(function (item) {
+    itemsHeight += item.parentNode.offsetHeight;
+  });
+
+  // Should we auto-collapse any nav items? Try to find the smallest item
+  // that can be collapsed to show all items on the screen. If not possible,
+  // then collapse the largest item and do it again. First, sort the items
+  // by height from smallest to largest.
+  var sortedItems = itemsArray.sort(function (a, b) {
+    return a.parentNode.offsetHeight - b.parentNode.offsetHeight;
+  });
+
+  while (sortedItems.length && itemsHeight > windowHeight) {
+    for (var i = 0; i < sortedItems.length; i++) {
+      // Will collapsing this item help?
+      var itemHeight = sortedItems[i].nextSibling.offsetHeight;
+      if ((itemsHeight - itemHeight <= windowHeight) || i === sortedItems.length - 1) {
+        // It will, so let's collapse it, remove its content height from
+        // our total and then remove it from our list of candidates
+        // that can be collapsed.
+        itemsHeight -= itemHeight;
+        toggleCollapseNav({target: sortedItems[i].children[0]}, true);
+        sortedItems.splice(i, 1);
+        break;
+      }
+    }
+  }
+}
+
+/*
+  Initialize the interactive functionality of the page.
+*/
+function init() {
+    var i;
+
+    // Make collapse buttons clickable
+    var buttons = document.querySelectorAll('.collapse-button');
+    for (i = 0; i < buttons.length; i++) {
+        buttons[i].onclick = toggleCollapseButton;
+
+        // Show by default? Then toggle now.
+        if (buttons[i].className.indexOf('show') !== -1) {
+            toggleCollapseButton({target: buttons[i].children[0]});
+        }
+    }
+
+    // Make nav items clickable to collapse/expand their content.
+    var navItems = document.querySelectorAll('nav .resource-group .heading');
+    for (i = 0; i < navItems.length; i++) {
+        navItems[i].onclick = toggleCollapseNav;
+
+        // Show all by default
+        toggleCollapseNav({target: navItems[i].children[0]});
+    }
+}
+
+// Initial call to set up buttons
+init();
+
+window.onload = function () {
+    autoCollapse();
+    // Remove the `preload` class to enable animations
+    document.querySelector('body').className = '';
+};
+</script></body></html>
